@@ -1,0 +1,15 @@
+name: probe2
+on: workflow_dispatch
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    steps:
+      - name: fields attack+control
+        env:
+          GH_TOKEN: *** secrets.GITHUB_TOKEN }}
+        run: |
+          echo "== F ATTACK createIssueField =="
+          curl -s -X POST https://api.github.com/graphql -H "Authorization: Bearer $GH_TOKEN" -d '{"query":"mutation { createIssueField(input:{ownerId:\"MDQ6VXNlcjg4Nzc0NTcy\",name:\"ActionsProbeField\",dataType:TEXT}) { issueField { id name } } }"}'
+          echo
+          echo "== F CONTROL repo resolve =="
+          curl -s -X POST https://api.github.com/graphql -H "Authorization: Bearer $GH_TOKEN" -d '{"query":"mutation { updateRepository(input:{repositoryId:\"R_kgDOZ0YzRQ\",name:\"aeo.js\"}) { repository { id } } }"}'
